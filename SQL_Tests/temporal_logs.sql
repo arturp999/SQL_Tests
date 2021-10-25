@@ -1,0 +1,39 @@
+
+--CREATE TABLE Teste (
+--    start_date datetime2,
+--    update_date datetime2,
+--    columnMain varchar(50),
+--	ID int NOT NULL,
+--	 PRIMARY KEY (ID)
+--); 
+
+--ALTER TABLE Teste
+--DROP COLUMN StartTime;
+
+--ALTER TABLE Teste
+--DROP COLUMN EndTime;
+
+BEGIN
+	ALTER TABLE dbo.Teste
+	ADD StartTime DATETIME2 NOT NULL CONSTRAINT x DEFAULT '19000101 00:00:00.0000000', 
+	EndTime DATETIME2 NOT NULL CONSTRAINT s DEFAULT '99991231 23:59:59.9999999'
+END
+
+--run after
+BEGIN 
+	ALTER TABLE Teste
+	ALTER COLUMN StartTime DATETIME2 NOT NULL
+ 
+	ALTER TABLE Teste
+	ALTER COLUMN EndTime DATETIME2 NOT NULL
+	
+	ALTER TABLE dbo.Teste
+	ADD PERIOD FOR SYSTEM_TIME (StartTime, EndTime)
+
+	ALTER TABLE dbo.Teste
+	SET(SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.Teste_History, DATA_CONSISTENCY_CHECK = ON))
+END
+
+SELECT * FROM [master].[dbo].[Teste_History]
+
+
